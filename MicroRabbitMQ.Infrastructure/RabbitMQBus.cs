@@ -116,7 +116,22 @@ namespace MicroRabbitMQ.Infrastructure
 
         private async Task ProcessEvent(string eventName, string message)
         {
-
+            if (_handlers.ContainsKey(eventName))
+            {
+                using (var scope = _serviceScopeFactory.CreateScope())
+                {
+                    var subscriptions = _handlers[eventName];
+                    foreach (var subscription in subscriptions)
+                    {
+                        var handler = scope.ServiceProvider.GetService(subscription);
+                        if (handler == null) continue;
+                        var eventType = _eventTypes.SingleOrDefault(t => t.Name == eventName);
+                        var @event = JsonConvert.DeserializeObject(message, eventType);
+                        var conreteType = typeof(IEventHandler<>).MakeGenericType(eventType);
+                        await (Task)conreteType.GetMethod("Handler").Invoke(handler, new object[] { @event });
+                    }
+                }
+            }
         }
     }
 }
