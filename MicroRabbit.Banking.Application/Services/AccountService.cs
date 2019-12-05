@@ -1,5 +1,6 @@
 ﻿using MicroRabbit.Banking.Application.Interfaces;
 using MicroRabbit.Banking.Application.Models;
+using MicroRabbit.Banking.Domain.Commands;
 using MicroRabbit.Banking.Domain.Interfaces;
 using MicroRabbit.Banking.Domain.Models;
 using MicroRabbitMQ.Domain.Core.EventBus;
@@ -25,15 +26,16 @@ namespace MicroRabbit.Banking.Application.Services
         {
             return await _accountRepository.GetAccounts();
         }
-
-        public Task Transfer(AccountTransfer accountTransfer)
+    
+        public async Task Transfer(AccountTransfer accountTransfer)
         {
-            throw new NotImplementedException();
-        }
+            var createTransferCommand = new CreateTransferCommand(
+                accountTransfer.FromAccount,
+                accountTransfer.ToAccount,
+                accountTransfer.TransferAmount
+            );
 
-        //public async Task Transfer(AccountTransfer accountTransfer)
-        //{
-        //    var result = await 
-        //}
+            await _bus.SendCommand(createTransferCommand);           
+        }
     }
 }

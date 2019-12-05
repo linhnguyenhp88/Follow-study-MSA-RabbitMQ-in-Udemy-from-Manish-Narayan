@@ -28,10 +28,11 @@ namespace MicroRabbit.Banking.Api.Controllers
             return Ok(new { result });
         }
 
-        //[HttpPost]
-        //public async IActionResult Post([FromBody]AccountTransfer accountTransfer)
-        //{
-        //    var result = _accountService.t
-        //}
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody]AccountTransfer accountTransfer)
+        {
+            await _accountService.Transfer(accountTransfer);
+            return Ok(accountTransfer);
+        }
     }
 }
