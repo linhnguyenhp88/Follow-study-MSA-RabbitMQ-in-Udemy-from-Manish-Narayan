@@ -6,6 +6,12 @@ using MicroRabbit.Banking.Data.Repository;
 using MicroRabbit.Banking.Domain.CommandHandlers;
 using MicroRabbit.Banking.Domain.Commands;
 using MicroRabbit.Banking.Domain.Interfaces;
+using MicroRabbit.Transfer.Application.Interfaces;
+using MicroRabbit.Transfer.Application.Services;
+using MicroRabbit.Transfer.Data.DAL;
+using MicroRabbit.Transfer.Data.Repository;
+using MicroRabbit.Transfer.Domain.EventHandlers;
+using MicroRabbit.Transfer.Domain.Interfaces;
 using MicroRabbitMQ.Domain.Core.EventBus;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -25,15 +31,21 @@ namespace MicroRabbitMQ.Infrastructure
                 return new RabbitMQBus(sp.GetService<IMediator>(), scopeFactory);
             });
 
+            //Subscriptions
+            services.AddTransient<TransferEventHandler>();
+
             //Domain Banking Commands
             services.AddTransient<IRequestHandler<CreateTransferCommand, bool>, TransferCommandHandler>();
 
-            //Application Services
+            //Application Services 
             services.AddTransient<IAccountService, AccountService>();
+            services.AddTransient<ITransferService, TransferService>();
 
             //Data
             services.AddTransient<IAccountRepository, AccountRepository>();
             services.AddTransient<BankingDbContext>();
+            services.AddTransient<ITransferRepository, TransferRepository>();
+            services.AddTransient<TransferDbContext>();
         }
     }
 }
