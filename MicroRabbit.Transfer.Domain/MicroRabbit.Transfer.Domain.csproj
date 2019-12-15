@@ -9,4 +9,8 @@
     <Folder Include="Commands\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MicroRabbitMQ.Domain.Core\MicroRabbitMQ.Domain.Core.csproj" />
+  </ItemGroup>
+
 </Project>
