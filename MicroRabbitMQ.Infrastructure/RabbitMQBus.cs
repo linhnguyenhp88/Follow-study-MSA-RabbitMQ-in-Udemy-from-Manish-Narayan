@@ -110,7 +110,7 @@ namespace MicroRabbitMQ.Infrastructure
             catch (Exception ex)
             {
 
-                throw;
+                throw ex;
             }
         }
 
